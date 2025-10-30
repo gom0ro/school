@@ -1,0 +1,528 @@
+/* Базовые стили */
+html,
+body {
+  position: relative;
+  height: 100%;
+}
+
+body {
+  background: #F2F2EF;
+  font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  color: #212517;
+  margin: 0;
+  padding: 0;
+}
+
+section {
+  margin-top: 100px;
+  
+}
+
+/* Стили для хедера */
+header {
+  background: #fff;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  height: 80px;
+}
+
+.header-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 15px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header-container img {
+  width: 40px;
+}
+
+.header-container h3 {
+  margin: 0 10px;
+  font-size: 1.2rem;
+}
+
+nav ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  gap: 15px;
+}
+
+nav ul li a {
+  text-decoration: none;
+  color: #333;
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+
+.burger-menu {
+  display: none;
+  flex-direction: column;
+  cursor: pointer;
+  gap: 5px;
+}
+
+.burger-menu span {
+  width: 25px;
+  height: 3px;
+  background-color: #333;
+  transition: all 0.3s ease;
+}
+
+.burger-menu.active span:nth-child(1) {
+  transform: rotate(45deg) translate(5px, 5px);
+}
+
+.burger-menu.active span:nth-child(2) {
+  opacity: 0;
+}
+
+.burger-menu.active span:nth-child(3) {
+  transform: rotate(-45deg) translate(7px, -7px);
+}
+
+@media (max-width: 768px) {
+  nav {
+    display: none;
+  }
+
+  nav.active {
+    display: block;
+    position: absolute;
+    top: 80px;
+    left: 0;
+    width: 100%;
+    background-color: #fff;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  nav ul {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  nav ul li {
+    margin: 10px 0;
+  }
+
+  .burger-menu {
+    display: flex;
+  }
+}
+
+h1 {
+  margin: 0;
+  font-size: 1.5rem;
+  color: #374709;
+}
+
+nav ul li::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2px;
+  background: #759242;
+  bottom: 0;
+  left: 0;
+  transition: width 0.3s ease;
+}
+
+nav ul li:hover::after {
+  width: 100%;
+}
+
+nav ul li:hover a {
+  color: #759242;
+}
+
+/* Карусель */
+.carousel-item img {
+  width: 100%;
+  height: 500px;
+  object-fit: cover;
+}
+
+@media (max-width: 768px) {
+  .carousel-item img {
+    height: 300px;
+  }
+}
+
+/* Стили для карточек */
+.card {
+  margin: 20px auto;
+  padding: 75px;
+  width: 90%;
+  max-width: 345px;
+  height: 200px;
+  background-color: #f2f2f2;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  perspective: 1000px;
+  box-shadow: 0 0 0 5px #ffffff80;
+  transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.card svg {
+  width: 48px;
+  fill: #333;
+  transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.card:hover {
+  transform: scale(1.05);
+  box-shadow: 0 8px 16px rgba(255, 255, 255, 0.2);
+}
+
+.card__content {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  padding: 20px;
+  box-sizing: border-box;
+  background-color: #f2f2f2;
+  transform: rotateX(-90deg);
+  transform-origin: bottom;
+  transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.card:hover .card__content {
+  transform: rotateX(0deg);
+}
+
+.card__title {
+  margin: 0;
+  font-size: 1.2rem;
+  color: #333;
+  font-weight: 700;
+}
+
+.card:hover svg {
+  scale: 0;
+}
+
+.card__description {
+  margin: 10px 0 0;
+  font-size: 0.9rem;
+  color: #777;
+  line-height: 1.4;
+}
+
+/* Стили для секции "О нас" */
+.about {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 40px 20px;
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #F2F2EF;
+  flex-wrap: wrap;
+}
+
+.about-text {
+  flex: 1;
+  min-width: 280px;
+}
+
+.about-text h2 {
+  font-size: 2rem;
+  font-weight: 900;
+  color: #759242;
+}
+
+.about-text h3 {
+  font-size: 1.1rem;
+  font-weight: bold;
+  margin-top: 15px;
+  color: #374709;
+}
+
+.about-text p {
+  margin-top: 15px;
+  line-height: 1.6;
+  color: #212517;
+}
+
+.about-text .btn {
+  display: inline-block;
+  margin-top: 20px;
+  padding: 10px 20px;
+  background-color: #759242;
+  color: #F2F2EF;
+  border-radius: 8px;
+  font-weight: bold;
+  text-decoration: none;
+  transition: background 0.3s ease;
+}
+
+.about-text .btn:hover {
+  background-color: #374709;
+}
+
+.about-img {
+  flex: 1;
+  min-width: 280px;
+}
+
+.about-img img {
+  width: 100%;
+  border-radius: 16px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.mirrored-about {
+  flex-direction: row-reverse;
+}
+
+@media (max-width: 768px) {
+  .about {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .mirrored-about {
+    flex-direction: column;
+  }
+}
+
+/* Стили для секции контактов */
+.contact-container {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+  padding: 20px;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.contact-info {
+  flex: 1;
+  min-width: 280px;
+}
+
+.contact-info h2 {
+  color: #759242;
+  font-size: 1.5rem;
+  margin-top: 10px;
+}
+
+.contact-info p,
+.contact-info a {
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: #212517;
+}
+
+.contact-info a {
+  text-decoration: none;
+  color: #374709;
+  font-weight: bold;
+}
+
+.social-icons {
+  margin-top: 15px;
+  display: flex;
+  gap: 10px;
+}
+
+.social-icons img {
+  width: 24px;
+  opacity: 0.8;
+  transition: 0.3s;
+  cursor: pointer;
+}
+
+.social-icons img:hover {
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+.map-embed {
+  flex: 1;
+  min-width: 280px;
+}
+
+.map-embed iframe {
+  width: 100%;
+  height: 300px;
+  border: none;
+  border-radius: 12px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+@media (max-width: 768px) {
+  .contact-container {
+    flex-direction: column;
+  }
+
+  .map-embed iframe {
+    height: 200px;
+  }
+}
+
+/* Стили для новостей */
+.news-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+.img {
+  width: 100%;
+  height: 200px;
+  background-color: #212517;
+  border-radius: 20px;
+}
+
+.news-card {
+  text-align: start;
+}
+
+@media (max-width: 768px) {
+  .news-card {
+    margin: 0;
+  }
+}
+
+/* Анимация для секций */
+.fade-in {
+  opacity: 0;
+  transform: translateY(50px);
+  transition: all 0.6s ease-out;
+}
+
+.fade-in.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Стили для статистики */
+.stats-section {
+  background: linear-gradient(135deg, #759242, #374709);
+  color: #F2F2EF;
+  padding: 20px;
+  text-align: center;
+}
+
+.stats-section h2 {
+  font-size: 1.8rem;
+  margin-bottom: 20px;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 20px;
+}
+
+.stat-item h3 {
+  font-size: 2rem;
+  font-weight: 900;
+  margin: 0;
+  color: #DED3A6;
+}
+
+.stat-item p {
+  font-size: 0.9rem;
+  margin-top: 5px;
+}
+
+@media (max-width: 768px) {
+  .stats-grid {
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  }
+
+  .stat-item h3 {
+    font-size: 1.5rem;
+  }
+}
+
+/* Стили для цитат */
+.container-quote {
+  background: #DED3A6;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  max-width: 500px;
+  margin: 10px auto;
+  padding: 20px;
+  text-align: center;
+}
+
+.container-quote img {
+  width: 100%;
+  max-width: 200px;
+  height: auto;
+}
+
+.quote-text p {
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+@media (max-width: 768px) {
+  .d-flex {
+    flex-direction: column;
+  }
+}
+
+/* Стили для сотрудников */
+.swiper-slide {
+  text-align: center;
+}
+
+.swiper-slide img {
+  width: 100%;
+  max-width: 200px;
+  height: auto;
+  border-radius: 10px;
+}
+
+.swiper-slide h1 {
+  font-size: 1rem;
+  margin: 10px 0;
+  color: #374709;
+}
+
+@media (max-width: 768px) {
+  .swiper-slide img {
+    max-width: 150px;
+  }
+}
+
+/* Футер */
+footer {
+  background: #374709;
+  color: #F2F2EF;
+  padding: 20px;
+  text-align: center;
+}
+
+footer p {
+  margin: 0;
+  font-size: 0.9rem;
+}
+.container{
+  text-align: center;
+}
+.carousel-inner{
+  color: white;
+}

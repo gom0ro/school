@@ -1,0 +1,48 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ news.title }}</title>
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  <style>
+    .news-detail {
+      max-width: 800px;
+      margin: 40px auto;
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      padding: 25px;
+    }
+    .news-detail img {
+      width: 100%;
+      border-radius: 10px;
+      margin-bottom: 20px;
+    }
+    .news-detail h1 {
+      font-size: 1.8rem;
+      color: #007bff;
+    }
+    .news-detail p {
+      line-height: 1.6;
+      color: #333;
+      font-size: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="news-detail">
+    {% if news.image %}
+    <img src="{{ news.image.url }}" alt="{{ news.title }}">
+    {% endif %}
+    <h1>{{ news.title }}</h1>
+    <p><small>{{ news.created_at|date:"d.m.Y" }}</small></p>
+    <p>{{ news.content }}</p>
+  </div>
+
+  <div style="text-align:center; margin-top:20px;">
+    <a href="{% url 'index' %}" style="color:#007bff;">← Басты бетке оралу</a>
+  </div>
+</body>
+</html>

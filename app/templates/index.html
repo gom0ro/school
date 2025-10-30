@@ -1,0 +1,794 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="kk">
+<style>
+  /* Кнопка "Вверх" */
+#scrollTopBtn {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  display: none;
+  z-index: 1000;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+  transition: all 0.3s ease;
+}
+
+#scrollTopBtn:hover {
+  background-color: #0056b3;
+  transform: scale(1.1);
+}
+
+
+ul {
+  list-style: none;
+}
+
+.example-2 {
+  display: flex;
+  align-items: center;
+}
+.example-2 .icon-content {
+  margin: 0 10px;
+  position: relative;
+}
+.example-2 .icon-content .tooltip {
+  position: absolute;
+  top: -30px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: #fff;
+  padding: 6px 10px;
+  border-radius: 5px;
+  opacity: 0;
+  visibility: hidden;
+  font-size: 14px;
+  transition: all 0.3s ease;
+}
+.example-2 .icon-content:hover .tooltip {
+  opacity: 1;
+  visibility: visible;
+  top: -50px;
+}
+.example-2 .icon-content a {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  color: #4d4d4d;
+  background-color: #fff;
+  transition: all 0.3s ease-in-out;
+}
+.example-2 .icon-content a:hover {
+  box-shadow: 3px 2px 45px 0px rgb(0 0 0 / 12%);
+}
+.example-2 .icon-content a svg {
+  position: relative;
+  z-index: 1;
+  width: 30px;
+  height: 30px;
+}
+.example-2 .icon-content a:hover {
+  color: white;
+}
+.example-2 .icon-content a .filled {
+  position: absolute;
+  top: auto;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 0;
+  background-color: #000;
+  transition: all 0.3s ease-in-out;
+}
+.example-2 .icon-content a:hover .filled {
+  height: 100%;
+}
+
+.example-2 .icon-content a[data-social="whatsapp"] .filled,
+.example-2 .icon-content a[data-social="whatsapp"] ~ .tooltip {
+  background-color: #128c7e;
+}
+
+.example-2 .icon-content a[data-social="facebook"] .filled,
+.example-2 .icon-content a[data-social="facebook"] ~ .tooltip {
+  background-color: #3b5998;
+}
+.example-2 .icon-content a[data-social="instagram"] .filled,
+.example-2 .icon-content a[data-social="instagram"] ~ .tooltip {
+  background: linear-gradient(
+    45deg,
+    #405de6,
+    #5b51db,
+    #b33ab4,
+    #c135b4,
+    #e1306c,
+    #fd1f1f
+  );
+}
+.example-2 .icon-content a[data-social="youtube"] .filled,
+.example-2 .icon-content a[data-social="youtube"] ~ .tooltip {
+  background-color: #ff0000;
+}
+
+/* Стили для секции кружков */
+.clubs-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+    margin-top: 40px;
+}
+
+.club-card {
+    background: white;
+    border-radius: 15px;
+    padding: 30px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    text-align: center;
+}
+
+.club-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+}
+
+.club-icon {
+    font-size: 48px;
+    color: #007bff;
+    margin-bottom: 20px;
+}
+
+.club-image img {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 50%;
+    margin-bottom: 20px;
+}
+
+.club-title {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 15px;
+    color: #333;
+}
+
+.club-description {
+    color: #666;
+    line-height: 1.6;
+}
+
+.no-clubs {
+    text-align: center;
+    padding: 60px 20px;
+    color: #999;
+}
+
+/* Стили для секции сотрудников */
+.staff-card {
+    background: white;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease;
+    height: 100%;
+}
+
+.staff-card:hover {
+    transform: translateY(-5px);
+}
+
+.staff-card img {
+    width: 100%;
+    height: 250px;
+    object-fit: cover;
+}
+
+.staff-info {
+    padding: 20px;
+    text-align: center;
+}
+
+.staff-info h3 {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 5px;
+    color: #333;
+}
+
+.staff-position {
+    color: #007bff;
+    font-weight: 500;
+    margin-bottom: 5px;
+}
+
+.staff-experience {
+    color: #666;
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+
+.staff-description {
+    color: #777;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.no-staff {
+    text-align: center;
+    padding: 40px 20px;
+    color: #999;
+}
+
+/* Адаптивность для Swiper */
+@media (max-width: 768px) {
+    .clubs-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .swiper-slide {
+        padding: 10px;
+    }
+}
+
+/* Полноэкранная карусель */
+.hero-carousel {
+  position: relative;
+  width: 100%;
+  height: 100vh; /* Полная высота экрана */
+  overflow: hidden;
+  margin-bottom: 40px;
+}
+
+.carousel-wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.carousel-slide {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top:0; left:0;
+  background-size: cover;
+  background-position: center;
+  opacity: 0;
+  transition: opacity 1s ease-in-out;
+}
+
+.carousel-slide.active {
+  opacity: 1;
+  z-index: 1;
+}
+
+.carousel-caption {
+  position: absolute;
+  bottom: 100px;
+  left: 50px;
+  color: #fff;
+  background: rgba(0,0,0,0.4);
+  padding: 20px;
+  border-radius: 10px;
+  max-width: 500px;
+}
+
+/* Убраны стрелки */
+.carousel-btn {
+  display: none;
+}
+
+.carousel-indicators {
+  position: absolute;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  display:flex;
+  gap: 10px;
+  z-index: 2;
+}
+
+.carousel-indicators .indicator {
+  width:12px;
+  height:12px;
+  border-radius:50%;
+  background: rgba(255,255,255,0.6);
+  cursor:pointer;
+  transition: 0.3s;
+}
+
+.carousel-indicators .indicator.active {
+  background: #007bff;
+}
+
+/* Адаптивность для карусели */
+@media (max-width: 768px) {
+  .carousel-caption {
+    bottom: 80px;
+    left: 20px;
+    right: 20px;
+    max-width: none;
+  }
+  
+  .carousel-indicators {
+    bottom: 20px;
+  }
+}
+.news-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+    }
+    .news-card {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      overflow: hidden;
+      transition: transform 0.2s;
+    }
+    .news-card:hover {
+      transform: translateY(-5px);
+    }
+    .news-card img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+    }
+    .news-card-content {
+      padding: 15px;
+    }
+    .news-card-content h3 {
+      margin: 0;
+      font-size: 1.2rem;
+      color: #007bff;
+    }
+    .news-card-content p {
+      color: #333;
+      font-size: 0.95rem;
+      margin-top: 5px;
+    }
+</style>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IT Школа-Лицей №24</title>
+  
+  <!-- SEO и Open Graph метатеги -->
+  <meta name="description" content="IT Школа-Лицей №24 — инновациялық білім беру мекемесі. Заманауи IT бағытындағы жеке мектеп.">
+  <meta name="keywords" content="школа, лицей, IT, Шымкент, білім, оқыту, информатика">
+  <meta name="author" content="IT Школа-Лицей №24">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="IT Школа-Лицей №24">
+  <meta property="og:description" content="Жаңа заманға сай IT білім беру мекемесі.">
+  <meta property="og:image" content="{% static 'img/education.png' %}">
+  <meta property="og:url" content="https://example.com/">
+  
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+  <link rel="shortcut icon" href="{% static 'img/education.png' %}" type="image/x-icon">
+</head>
+<body>
+  <header>
+    <div class="header-container">
+      <img width="5%" src="{% static 'img/education.png' %}" alt="Logo">
+      <h3>IT Школа-Лицей №24</h3>
+      <div class="burger-menu" onclick="toggleMenu()">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+      <nav>
+        <ul>
+          <li><a href="#about">Біз туралы</a></li>
+          <li><a href="#clubs">Үйірмелер</a></li>
+          <li><a href="#staff">Қызметкерлер</a></li>
+          <li><a href="#news">Жаңалықтар</a></li>
+          <li><a href="{% url 'contact' %}">Байланыс</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+<section class="hero-carousel">
+  <div class="carousel-wrapper">
+    <div class="carousel-slide active" style="background-image: url('{% static 'img/Изображение WhatsApp 2025-04-10 в 19.41.41_cbce0e5c.jpg' %}');">
+      <div class="carousel-caption">
+        <h2>Добро пожаловать в IT Школа-Лицей №24</h2>
+        <p>Современное образование для будущих IT специалистов</p>
+      </div>
+    </div>
+    <div class="carousel-slide" style="background-image: url('{% static 'img/Изображение WhatsApp 2025-04-10 в 19.41.41_cbce0e5c.jpg' %}');">
+      <div class="carousel-caption">
+        <h2>Наши достижения</h2>
+        <p>Высокие результаты и успехи учеников</p>
+      </div>
+    </div>
+    <div class="carousel-slide" style="background-image: url('{% static 'img/Изображение WhatsApp 2025-04-10 в 19.41.41_cbce0e5c.jpg' %}');">
+      <div class="carousel-caption">
+        <h2>Присоединяйтесь к нам</h2>
+        <p>Развивайтесь в современном IT пространстве</p>
+      </div>
+    </div>
+
+    <!-- Навигация без стрелок -->
+  </div>
+
+  <!-- Индикаторы -->
+  <div class="carousel-indicators">
+    <span class="indicator active" data-slide="0"></span>
+    <span class="indicator" data-slide="1"></span>
+    <span class="indicator" data-slide="2"></span>
+  </div>
+</section>   
+    <section class="about mirrored-about fade-in" id="about">
+      <div class="about-img">
+        <img src="{% static 'img/Изображение WhatsApp 2025-04-10 в 19.41.41_cbce0e5c.jpg' %}" alt="Мектеп суреті">
+      </div> 
+      <div class="about-text">
+        <h2>Біз туралы</h2>
+        <h3>
+          Жеке мектептер мемлекеттік бағдарламамен сабақ береді, пәндері мен сабақ бөлімісі де ұқсас.
+          Алайда, бағдарлама мазмұны мен педагогиканың жаңа форматына байланысты қызық идеялар ұсына алады.
+        </h3>
+        <p>
+          Білім беру саласында жаңа өзгерістер, ұсыныстар, жаңа модельдерді енгізуге мүмкіндік көп.
+          Пәндердің мазмұнында академиялық еркіндік болады. Оқушыларға барлық пәнді оқуға міндеттемей, өздері таңдап алатындай жағдай жасалады.
+          Бұл білім беру жүйесіне еркіндік әкеледі. Себебі, оқушыларға өз қалауын айтуына мүмкіндік береді.
+          Бала өз қалауы бойынша мамандық таңдайды.
+        </p>
+        <a href="#" class="btn">Танысуға жазылыңыз</a>
+      </div>
+    </section>
+
+   <section id="clubs" class="fade-in">
+      <div class="container">
+        <h2>Үйірмелер</h2>
+        <div class="clubs-grid">
+          {% for club in clubs %}
+          <div class="club-card">
+            <a href="{% url 'club_detail' club.pk %}">
+              {% if club.icon %}
+                <div class="club-icon"><i class="{{ club.icon }}"></i></div>
+              {% elif club.image %}
+                <div class="club-image"><img src="{{ club.image.url }}" alt="{{ club.name }}"></div>
+              {% endif %}
+              <div class="club-content">
+                <h3 class="club-title">{{ club.name }}</h3>
+                <p class="club-description">{{ club.description|truncatewords:20 }}</p>
+              </div>
+            </a>
+          </div>
+          {% empty %}
+          <div class="no-clubs"><p>Үйірмелер әзірше қосылмаған</p></div>
+          {% endfor %}
+        </div>
+      </div>
+    </section>
+
+
+    <section id="stats" class="stats-section fade-in">
+      <div class="container">
+        <h2>Наши достижения</h2>
+        <div class="stats-grid">
+          <div class="stat-item">
+            <h3 class="stat-number" data-target="1500">0</h3>
+            <p>Оқушылар</p>
+          </div>
+          <div class="stat-item">
+            <h3 class="stat-number" data-target="10">0</h3>
+            <p>Үйірмелер</p>
+          </div>
+          <div class="stat-item">
+            <h3 class="stat-number" data-target="50">0</h3>
+            <p>Жетістіктер</p>
+          </div>
+          <div class="stat-item">
+            <h3 class="stat-number" data-target="15">0</h3>
+            <p>Жыл тәжірбие</p>
+          </div>
+        </div>  
+      </div>
+    </section>
+    
+  
+    
+   <section id="staff" class="fade-in">
+  <div class="container">
+    <h2>Қызметкерлер</h2>
+    <p>Мектеп қызметкерлерінің тізімі</p>
+    
+    <div class="swiper mySwiper">
+      <div class="swiper-wrapper">
+        {% for staff in staff_members %}
+        <div class="swiper-slide">
+          <div class="staff-card">
+            <img src="{{ staff.image.url }}" alt="{{ staff.name }}">
+            <div class="staff-info">
+              <h3>{{ staff.name }}</h3>
+              <p class="staff-position">{{ staff.get_position_display }}</p>
+              {% if staff.experience %}
+              <p class="staff-experience">{{ staff.experience }} жыл тәжірибе</p>
+              {% endif %}
+              {% if staff.description %}
+              <p class="staff-description">{{ staff.description }}</p>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+        {% empty %}
+        <div class="swiper-slide">
+          <div class="no-staff">
+            <p>Қызметкерлер әзірше қосылмаған</p>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      <div class="swiper-pagination"></div>
+    </div>
+  </div>
+</section>
+
+   <section id="news">
+    <div class="container">
+      <h2>Жаңалықтар</h2>
+      <div class="news-grid">
+        {% for news_item in news_list %}
+        <a href="{% url 'news_detail' news_item.id %}" class="news-card">
+          {% if news_item.image %}
+          <img src="{{ news_item.image.url }}" alt="{{ news_item.title }}">
+          {% endif %}
+          <div class="news-card-content">
+            <h3>{{ news_item.title }}</h3>
+            <p>{{ news_item.content|truncatewords:20 }}</p>
+            <small>{{ news_item.created_at|date:"d.m.Y" }}</small>
+          </div>
+        </a>
+        {% empty %}
+        <p>Жаңалықтар жоқ</p>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+
+
+    <section id="contact" class="fade-in">
+      <div class="contact-container">
+        <div class="contact-info">
+          <img src="{% static 'img/school_2602412.png' %}" alt="School Logo" style="height: 60px;">
+          <h2>It Школа-Лицей №24</h2>
+          <p>Жеке мектептер мемлекеттік бағдарламамен сабақ береді, пәндері мен сабақ бөлімісі де ұқсас. Алайда, бағдарлама мазмұны мен педагогиканың жаңа форматына байланысты қызық идеялар ұсына алады.</p>
+          <h3><strong>Байланыс</strong></h3>
+          <p>
+            ШЫмкент қаласы, С.Жандосов көшесі,<br>
+            8:00-де 18:30-ге дейін толық сменді оқыту<br><br>
+            <strong>+7-777-777-7777</strong><br>
+            <a href="#">gmail@mail.ru</a>
+          </p>
+          <!-- From Uiverse.io by wilsondesouza --> 
+<ul class="example-2">
+  <li class="icon-content">
+    <a
+      data-social="whatsapp"
+      aria-label="Whatsapp"
+      href="https://api.whatsapp.com/send?phone=+112067101079&amp;text=Save%20this%20to%20your%20Favorites%20-%20@wilsondesouza"
+    >
+      <div class="filled"></div>
+      <svg
+        xml:space="preserve"
+        viewBox="0 0 24 24"
+        class="bi bi-whatsapp"
+        fill="currentColor"
+        height="24"
+        width="24"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          fill="currentColor"
+          d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"
+        ></path>
+      </svg>
+    </a>
+    <div class="tooltip">Whatsapp</div>
+  </li>
+  <li class="icon-content">
+    <a
+      data-social="facebook"
+      aria-label="Facebook"
+      href="https://www.facebook.com/"
+    >
+      <div class="filled"></div>
+      <svg
+        xml:space="preserve"
+        viewBox="0 0 24 24"
+        class="bi bi-facbook"
+        fill="currentColor"
+        height="24"
+        width="24"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          fill="currentColor"
+          d="M23.9981 11.9991C23.9981 5.37216 18.626 0 11.9991 0C5.37216 0 0 5.37216 0 11.9991C0 17.9882 4.38789 22.9522 10.1242 23.8524V15.4676H7.07758V11.9991H10.1242V9.35553C10.1242 6.34826 11.9156 4.68714 14.6564 4.68714C15.9692 4.68714 17.3424 4.92149 17.3424 4.92149V7.87439H15.8294C14.3388 7.87439 13.8739 8.79933 13.8739 9.74824V11.9991H17.2018L16.6698 15.4676H13.8739V23.8524C19.6103 22.9522 23.9981 17.9882 23.9981 11.9991Z"
+        ></path>
+      </svg>
+    </a>
+    <div class="tooltip">Facebook</div>
+  </li>
+  <li class="icon-content">
+    <a
+      data-social="instagram"
+      aria-label="Instagram"
+      href="https://www.instagram.com/"
+    >
+      <div class="filled"></div>
+      <svg
+        xml:space="preserve"
+        viewBox="0 0 16 16"
+        class="bi bi-instagram"
+        fill="currentColor"
+        height="16"
+        width="16"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          fill="currentColor"
+          d="M8 0C5.829 0 5.556.01 4.703.048 3.85.088 3.269.222 2.76.42a3.9 3.9 0 0 0-1.417.923A3.9 3.9 0 0 0 .42 2.76C.222 3.268.087 3.85.048 4.7.01 5.555 0 5.827 0 8.001c0 2.172.01 2.444.048 3.297.04.852.174 1.433.372 1.942.205.526.478.972.923 1.417.444.445.89.719 1.416.923.51.198 1.09.333 1.942.372C5.555 15.99 5.827 16 8 16s2.444-.01 3.298-.048c.851-.04 1.434-.174 1.943-.372a3.9 3.9 0 0 0 1.416-.923c.445-.445.718-.891.923-1.417.197-.509.332-1.09.372-1.942C15.99 10.445 16 10.173 16 8s-.01-2.445-.048-3.299c-.04-.851-.175-1.433-.372-1.941a3.9 3.9 0 0 0-.923-1.417A3.9 3.9 0 0 0 13.24.42c-.51-.198-1.092-.333-1.943-.372C10.443.01 10.172 0 7.998 0zm-.717 1.442h.718c2.136 0 2.389.007 3.232.046.78.035 1.204.166 1.486.275.373.145.64.319.92.599s.453.546.598.92c.11.281.24.705.275 1.485.039.843.047 1.096.047 3.231s-.008 2.389-.047 3.232c-.035.78-.166 1.203-.275 1.485a2.5 2.5 0 0 1-.599.919c-.28.28-.546.453-.92.598-.28.11-.704.24-1.485.276-.843.038-1.096.047-3.232.047s-2.39-.009-3.233-.047c-.78-.036-1.203-.166-1.485-.276a2.5 2.5 0 0 1-.92-.598 2.5 2.5 0 0 1-.6-.92c-.109-.281-.24-.705-.275-1.485-.038-.843-.046-1.096-.046-3.233s.008-2.388.046-3.231c.036-.78.166-1.204.276-1.486.145-.373.319-.64.599-.92s.546-.453.92-.598c.282-.11.705-.24 1.485-.276.738-.034 1.024-.044 2.515-.045zm4.988 1.328a.96.96 0 1 0 0 1.92.96.96 0 0 0 0-1.92m-4.27 1.122a4.109 4.109 0 1 0 0 8.217 4.109 4.109 0 0 0 0-8.217m0 1.441a2.667 2.667 0 1 1 0 5.334 2.667 2.667 0 0 1 0-5.334"
+        ></path>
+      </svg>
+    </a>
+    <div class="tooltip">Instagram</div>
+  </li>
+</ul>
+
+        </div>
+        <div class="map-embed">
+          <iframe
+            src="https://www.google.com/maps/embed?pb=..."
+            allowfullscreen=""
+            loading="lazy">
+          </iframe>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Кнопка "Вверх" -->
+  <button id="scrollTopBtn" title="Жоғарыға">↑</button>
+
+  <footer>
+    <div class="container">
+      <p>© 2025 It Школа-Лицей №24. Все права защищены.</p>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js" integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq" crossorigin="anonymous"></script>
+  <script>
+    var swiper = new Swiper(".mySwiper", {
+      slidesPerView: 3,
+      spaceBetween: 30,
+      freeMode: true,
+      pagination: {
+        el: ".swiper-pagination",
+        clickable: true,
+      },
+      breakpoints: {
+        320: { slidesPerView: 1, spaceBetween: 10 },
+        768: { slidesPerView: 2, spaceBetween: 20 },
+        1024: { slidesPerView: 3, spaceBetween: 30 }
+      }
+    });
+
+    function isElementInViewport(el) {
+      const rect = el.getBoundingClientRect();
+      return (
+        rect.top >= 0 &&
+        rect.top <= (window.innerHeight || document.documentElement.clientHeight)
+      );
+    }
+
+    function handleScroll() {
+      const elements = document.querySelectorAll('.fade-in');
+      elements.forEach(element => {
+        if (isElementInViewport(element)) {
+          element.classList.add('visible');
+        }
+      });
+    }
+
+    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('load', handleScroll);
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const counters = document.querySelectorAll('.stat-number');
+      const speed = 200;
+
+      const animateCounters = () => {
+        counters.forEach(counter => {
+          const updateCount = () => {
+            const target = +counter.getAttribute('data-target');
+            const count = +counter.innerText;
+            const increment = target / speed;
+
+            if (count < target) {
+              counter.innerText = Math.ceil(count + increment);
+              setTimeout(updateCount, 20);
+            } else {
+              counter.innerText = target;
+            }
+          };
+
+          if (isElementInViewport(counter)) {
+            updateCount();
+          }
+        });
+      };
+
+      window.addEventListener('scroll', animateCounters);
+      animateCounters();
+    });
+
+    function toggleMenu() {
+      const nav = document.querySelector('nav');
+      const burger = document.querySelector('.burger-menu');
+      nav.classList.toggle('active');
+      burger.classList.toggle('active');
+    }
+
+    // Кнопка "Вверх"
+    const scrollBtn = document.getElementById("scrollTopBtn");
+    
+    window.addEventListener("scroll", () => {
+      scrollBtn.style.display = window.scrollY > 400 ? "block" : "none";
+    });
+    
+    scrollBtn.addEventListener("click", () => {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+
+    // Автоматическое закрытие бургер-меню при клике на ссылку
+    document.querySelectorAll('nav ul li a').forEach(link => {
+      link.addEventListener('click', () => {
+        document.querySelector('nav').classList.remove('active');
+        document.querySelector('.burger-menu').classList.remove('active');
+      });
+    });
+
+    // Карусель без стрелок
+    const slides = document.querySelectorAll('.carousel-slide');
+    const indicators = document.querySelectorAll('.indicator');
+
+    let currentSlide = 0;
+    const totalSlides = slides.length;
+
+    function showSlide(index) {
+      slides.forEach((slide, i) => slide.classList.toggle('active', i === index));
+      indicators.forEach((ind, i) => ind.classList.toggle('active', i === index));
+      currentSlide = index;
+    }
+
+    indicators.forEach((ind, i) => {
+      ind.addEventListener('click', () => showSlide(i));
+    });
+
+    // Автопрокрутка
+    setInterval(() => {
+      showSlide((currentSlide + 1) % totalSlides);
+    }, 7000);
+  </script>
+</body>
+</html>
