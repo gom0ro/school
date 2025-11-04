@@ -1,0 +1,21 @@
+{% load static %}
+<header>
+    <div class="header-container">
+      <img width="5%" src="{% static 'img/education.png' %}" alt="Logo">
+      <h3>IT Школа-Лицей №24</h3>
+      <div class="burger-menu" onclick="toggleMenu()">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+      <nav>
+        <ul>
+          <li><a href="{% url 'index' %}#about">Біз туралы</a></li>
+          <li><a href="{% url 'index' %}#clubs">Үйірмелер</a></li>
+          <li><a href="{% url 'index' %}#staff">Қызметкерлер</a></li>
+          <li><a href="{% url 'index' %}#news">Жаңалықтар</a></li>
+          <li><a href="{% url 'contact' %}">Байланыс</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>

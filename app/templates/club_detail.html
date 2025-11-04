@@ -1,103 +1,27 @@
+{% extends 'base.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="kk">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{{ club.name }}</title>
-  <link rel="stylesheet" href="{% static 'css/style.css' %}">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet">
-  <style>
-    body {
-      background: #f7f7f7;
-      font-family: Arial, sans-serif;
-    }
 
-    .club-detail-card {
-      max-width: 800px; /* увеличена ширина */
-      margin: 80px auto; /* больше отступ сверху */
-      background: white;
-      border-radius: 20px;
-      box-shadow: 0 15px 40px rgba(0,0,0,0.15); /* более выразительная тень */
-      padding: 40px;
-      opacity: 0;
-      transform: translateY(30px);
-      transition: all 0.6s ease-in-out;
-      text-align: center;
-    }
+{% block title %}{{ club.name }} — IT Школа-Лицей №24{% endblock %}
 
-    .club-detail-card.visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
+{% block content %}
 
-    .club-detail-card img {
-      max-width: 400px; /* увеличено изображение */
-      border-radius: 20px;
-      margin-bottom: 30px;
-    }
+<style> body { background: #f8f9fa; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; } .club-detail-container { max-width: 900px; margin: 80px auto; padding: 0 20px; } .club-detail-card { background: white; border-radius: 24px; box-shadow: 0 20px 50px rgba(117, 146, 66, 0.15); padding: 50px; opacity: 0; transform: translateY(40px); transition: all 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94); text-align: center; position: relative; overflow: hidden; } .club-detail-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 6px; background: linear-gradient(90deg, #759242, #374709); } .club-detail-card.visible { opacity: 1; transform: translateY(0); } .club-image-container { margin-bottom: 35px; } .club-detail-card img { max-width: 450px; border-radius: 20px; box-shadow: 0 10px 30px rgba(117, 146, 66, 0.2); transition: transform 0.4s ease; } .club-detail-card img:hover { transform: scale(1.02); } .club-icon { color: #759242; margin-bottom: 30px; font-size: 5rem; } .club-name { font-size: 42px; font-weight: 800; color: #374709; margin-bottom: 25px; line-height: 1.2; letter-spacing: -0.5px; } .club-description { font-size: 18px; color: #555; line-height: 1.8; margin-bottom: 25px; text-align: left; } .club-order { background: linear-gradient(135deg, #759242, #374709); color: white; padding: 15px 25px; border-radius: 12px; font-size: 17px; font-weight: 600; margin-bottom: 35px; display: inline-block; box-shadow: 0 8px 20px rgba(117, 146, 66, 0.3); } .btn-back { color: #759242; text-decoration: none;  display: inline-flex; align-items: center; gap: 10px;  }  .club-detail-container { margin: 60px auto; padding: 0 15px; } .club-detail-card { padding: 30px 25px; } .club-name { font-size: 32px; } .club-detail-card img { max-width: 100%; } .club-icon { font-size: 4rem; } } </style><div class="club-detail-container"> <div class="club-detail-card" id="clubCard"> {% if club.image %} <div class="club-image-container"> <img src="{{ club.image.url }}" alt="{{ club.name }}"> </div> {% elif club.icon %} <div class="club-icon mb-4"> <i class="{{ club.icon }}"></i> </div> {% endif %}
+text
+<h1 class="club-name">{{ club.name }}</h1>
 
-    .club-detail-card .club-name {
-      font-size: 36px; /* увеличен шрифт */
-      font-weight: 700;
-      color: #007bff;
-      margin-bottom: 20px;
-    }
+<div class="club-description">
+  {{ club.description|linebreaks }}
+</div>
 
-    .club-detail-card .club-description {
-      font-size: 18px; /* увеличен текст */
-      color: #555;
-      line-height: 1.8;
-      margin-bottom: 20px;
-    }
-
-    .club-detail-card .club-order {
-      color: #999;
-      font-size: 16px; /* увеличен размер */
-      margin-bottom: 30px;
-    }
-
-    .btn-back {
-      background-color: #007bff;
-      color: white;
-      border: none;
-      padding: 12px 35px; /* увеличена кнопка */
-      font-size: 16px; /* увеличен текст кнопки */
-      border-radius: 12px;
-      text-decoration: none;
-      transition: all 0.3s ease;
-    }
-
-    .btn-back:hover {
-      background-color: #0056b3;
-      transform: scale(1.08); /* плавное увеличение при наведении */
-    }
-  </style>
-</head>
-<body>
-  <div class="club-detail-card" id="clubCard">
-    {% if club.image %}
-      <img src="{{ club.image.url }}" alt="{{ club.name }}">
-    {% elif club.icon %}
-      <div class="club-icon mb-4"><i class="{{ club.icon }} fa-5x"></i></div>
-    {% endif %}
-
-    <h1 class="club-name">{{ club.name }}</h1>
-    <p class="club-description">{{ club.description|linebreaks }}</p>
-    {% if club.order %}
-      <p class="club-order">Багасы: {{ club.order }}</p>
-    {% endif %}
-
-    <a href="{% url 'index' %}" class="btn-back">← Басты бетке қайту</a>
+{% if club.order %}
+  <div class="club-order">
+    🏆 Багасы: {{ club.order }}
   </div>
+{% endif %}
 
-  <script>
-    window.addEventListener('DOMContentLoaded', () => {
-      const card = document.getElementById('clubCard');
-      setTimeout(() => {
-        card.classList.add('visible');
-      }, 100);
-    });
-  </script>
-</body>
-</html>
+<a href="{% url 'index' %}" class="btn-back">
+  <span>←</span>
+  Басты бетке қайту
+</a>
+</div> </div><script> document.addEventListener('DOMContentLoaded', () => { const card = document.getElementById('clubCard'); setTimeout(() => { card.classList.add('visible'); }, 150); }); </script>
+{% endblock %}
