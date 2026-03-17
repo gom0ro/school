@@ -1,0 +1,150 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Жаңалықтар — Talant №1{% endblock %}
+
+{% block content %}
+
+<!-- ─── PAGE HEADER ──────────────────────────────────────── -->
+<section class="page-header">
+  <div class="container">
+    <nav aria-label="breadcrumb" data-aos="fade-down">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'app:index' %}">Басты бет</a></li>
+        <li class="breadcrumb-item active">Жаңалықтар</li>
+      </ol>
+    </nav>
+    <h1 class="page-header-title" data-aos="fade-up">Жаңалықтар</h1>
+    <p class="page-header-desc" data-aos="fade-up" data-aos-delay="100">Мектеп өмірінен соңғы жаңалықтар</p>
+  </div>
+</section>
+
+<!-- ─── FILTERS + NEWS GRID ──────────────────────────────── -->
+<section class="section-padding">
+  <div class="container">
+
+    <!-- Search & Filter Bar -->
+    <div class="news-filter-bar" data-aos="fade-up">
+      <form method="get" action="{% url 'app:news_list' %}" class="row g-3 align-items-end">
+        <div class="col-md-5">
+          <div class="input-group">
+            <span class="input-group-text"><i class="bi bi-search"></i></span>
+            <input type="text" class="form-control" name="q" placeholder="Жаңалық іздеу..." value="{{ search_query }}"
+              id="news-search-input">
+          </div>
+        </div>
+        <div class="col-md-4">
+          <select class="form-select" name="category" id="news-category-filter">
+            <option value="">Барлық санаттар</option>
+            {% for cat in categories %}
+            <option value="{{ cat.slug }}" {% if current_category==cat.slug %}selected{% endif %}>
+              {{ cat.name }}
+            </option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="col-md-3">
+          <button type="submit" class="btn btn-primary-custom w-100">
+            <i class="bi bi-funnel me-1"></i> Сүзу
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Results info -->
+    {% if search_query or current_category %}
+    <div class="results-info" data-aos="fade-up">
+      <p>
+        {% if search_query %}«{{ search_query }}» бойынша {% endif %}
+        {{ page_obj.paginator.count }} жаңалық табылды
+        {% if search_query or current_category %}
+        <a href="{% url 'app:news_list' %}" class="clear-filters">
+          <i class="bi bi-x-circle"></i> Тазалау
+        </a>
+        {% endif %}
+      </p>
+    </div>
+    {% endif %}
+
+    <!-- News Grid -->
+    {% if page_obj %}
+    <div class="row g-4 mt-2">
+      {% for item in page_obj %}
+      <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="{{ forloop.counter0 }}0">
+        <article class="news-card">
+          <div class="news-card-img">
+            {% if item.image %}
+            <img src="{{ item.image.url }}" alt="{{ item.title }}">
+            {% else %}
+            <div class="news-card-placeholder">
+              <i class="bi bi-newspaper"></i>
+            </div>
+            {% endif %}
+            {% if item.category %}
+            <span class="news-badge">{{ item.category.name }}</span>
+            {% endif %}
+          </div>
+          <div class="news-card-body">
+            <div class="news-card-date">
+              <i class="bi bi-calendar3 me-1"></i>
+              {{ item.created_at|date:"d.m.Y" }}
+            </div>
+            <h3 class="news-card-title">
+              <a href="{% url 'app:news_detail' item.slug %}">{{ item.title }}</a>
+            </h3>
+            <p class="news-card-text">{{ item.text|truncatewords:18 }}</p>
+            <a href="{% url 'app:news_detail' item.slug %}" class="news-card-link">
+              Оқу <i class="bi bi-arrow-right"></i>
+            </a>
+          </div>
+        </article>
+      </div>
+      {% endfor %}
+    </div>
+
+    <!-- Pagination -->
+    {% if page_obj.has_other_pages %}
+    <nav class="pagination-nav mt-5" data-aos="fade-up">
+      <ul class="pagination justify-content-center">
+        {% if page_obj.has_previous %}
+        <li class="page-item">
+          <a class="page-link"
+            href="?page={{ page_obj.previous_page_number }}{% if search_query %}&q={{ search_query }}{% endif %}{% if current_category %}&category={{ current_category }}{% endif %}">
+            <i class="bi bi-chevron-left"></i>
+          </a>
+        </li>
+        {% endif %}
+
+        {% for num in page_obj.paginator.page_range %}
+        <li class="page-item {% if page_obj.number == num %}active{% endif %}">
+          <a class="page-link"
+            href="?page={{ num }}{% if search_query %}&q={{ search_query }}{% endif %}{% if current_category %}&category={{ current_category }}{% endif %}">
+            {{ num }}
+          </a>
+        </li>
+        {% endfor %}
+
+        {% if page_obj.has_next %}
+        <li class="page-item">
+          <a class="page-link"
+            href="?page={{ page_obj.next_page_number }}{% if search_query %}&q={{ search_query }}{% endif %}{% if current_category %}&category={{ current_category }}{% endif %}">
+            <i class="bi bi-chevron-right"></i>
+          </a>
+        </li>
+        {% endif %}
+      </ul>
+    </nav>
+    {% endif %}
+
+    {% else %}
+    <div class="empty-state" data-aos="fade-up">
+      <i class="bi bi-inbox"></i>
+      <h4>Жаңалықтар табылмады</h4>
+      <p>Іздеу шарттарын өзгертіп көріңіз</p>
+    </div>
+    {% endif %}
+
+  </div>
+</section>
+
+{% endblock %}

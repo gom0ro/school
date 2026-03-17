@@ -1,0 +1,109 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ album.title }} — Галерея{% endblock %}
+
+{% block extra_head %}
+<style>
+  .lightbox-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.92);
+    z-index: 9999;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+  }
+  .lightbox-overlay.active { display: flex; }
+  .lightbox-overlay img {
+    max-width: 90vw;
+    max-height: 90vh;
+    border-radius: 12px;
+    box-shadow: 0 20px 60px rgba(0,0,0,.5);
+  }
+  .lightbox-close {
+    position: absolute;
+    top: 20px; right: 30px;
+    color: #fff;
+    font-size: 2rem;
+    cursor: pointer;
+    z-index: 10000;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- ─── PAGE HEADER ──────────────────────────────────────── -->
+<section class="page-header page-header-sm">
+  <div class="container">
+    <nav aria-label="breadcrumb" data-aos="fade-down">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'app:index' %}">Басты бет</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'app:gallery' %}">Галерея</a></li>
+        <li class="breadcrumb-item active">{{ album.title }}</li>
+      </ol>
+    </nav>
+    <h1 class="page-header-title" data-aos="fade-up">{{ album.title }}</h1>
+    {% if album.description %}
+    <p class="page-header-desc" data-aos="fade-up">{{ album.description }}</p>
+    {% endif %}
+  </div>
+</section>
+
+<!-- ─── ALBUM PHOTOS ─────────────────────────────────────── -->
+<section class="section-padding">
+  <div class="container">
+    {% if album.images.all %}
+    <div class="row g-3">
+      {% for photo in album.images.all %}
+      <div class="col-6 col-md-4 col-lg-3" data-aos="fade-up" data-aos-delay="{{ forloop.counter0 }}0">
+        <div class="gallery-photo" onclick="openLightbox('{{ photo.image.url }}')">
+          <img src="{{ photo.image.url }}" alt="{{ photo.caption }}">
+          {% if photo.caption %}
+          <div class="gallery-caption">{{ photo.caption }}</div>
+          {% endif %}
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state">
+      <i class="bi bi-image"></i>
+      <h4>Суреттер жоқ</h4>
+    </div>
+    {% endif %}
+
+    <div class="mt-4" data-aos="fade-up">
+      <a href="{% url 'app:gallery' %}" class="btn btn-outline-custom">
+        <i class="bi bi-arrow-left me-2"></i> Альбомдарға оралу
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ─── LIGHTBOX ─────────────────────────────────────────── -->
+<div class="lightbox-overlay" id="lightbox" onclick="closeLightbox()">
+  <span class="lightbox-close"><i class="bi bi-x-lg"></i></span>
+  <img id="lightbox-img" src="" alt="Фото">
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  function openLightbox(src) {
+    document.getElementById('lightbox-img').src = src;
+    document.getElementById('lightbox').classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeLightbox() {
+    document.getElementById('lightbox').classList.remove('active');
+    document.body.style.overflow = '';
+  }
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeLightbox();
+  });
+</script>
+{% endblock %}

@@ -1,80 +1,147 @@
-from django.shortcuts import render,redirect, get_object_or_404
-from .models import Club, Staff, News
+from django.shortcuts import render, get_object_or_404, redirect
+from django.core.paginator import Paginator
+from django.db.models import Q
+from django.contrib import messages
+
+from .models import (
+    News, NewsCategory, Teacher, GalleryAlbum,
+    DocumentCategory, Document, Page, Slider, Club
+)
 from .forms import ContactForm
-from django.core.mail import send_mail
+
+
+# ── Басты бет ───────────────────────────────────────────────
 
 def index(request):
-    # Получаем активные кружки и сотрудников
-    clubs = Club.objects.filter(is_active=True).order_by('order')
-    staff_members = Staff.objects.filter(is_active=True).order_by('order')
-    news_list = News.objects.all().order_by('-date')  # Сортировка новостей по дате (сначала свежие)
-
-    success = False  # флаг успешной отправки формы
-
-    # Обработка формы контакта
-    if request.method == 'POST':
-        form = ContactForm(request.POST)
-        if form.is_valid():
-            cd = form.cleaned_data
-            send_mail(
-                f"Хабарлама от {cd['name']}",
-                cd['message'],
-                cd['email'],
-                ['your_email@example.com'],  # замени на свою почту
-                fail_silently=False,
-            )
-            success = True
-            form = ContactForm()  # очистка формы после отправки
-    else:
-        form = ContactForm()
-
+    """Басты бет"""
+    sliders = Slider.objects.filter(is_active=True)
+    latest_news = News.objects.filter(is_published=True)[:6]
     context = {
-        'clubs': clubs,
-        'staff_members': staff_members,
-        'news_list': news_list,  # добавляем новости в контекст
-        'form': form,
-        'success': success,
+        'sliders': sliders,
+        'latest_news': latest_news,
     }
-
     return render(request, 'index.html', context)
 
-def contact_view(request):
-    success = False  # флаг успешной отправки формы
 
+# ── Мектеп туралы ───────────────────────────────────────────
+
+def about(request):
+    """Мектеп туралы бет"""
+    page = Page.objects.filter(slug='about').first()
+    teachers_preview = Teacher.objects.all()[:4]
+    context = {
+        'page': page,
+        'teachers_preview': teachers_preview,
+    }
+    return render(request, 'about.html', context)
+
+
+# ── Жаңалықтар ──────────────────────────────────────────────
+
+def news_list(request):
+    """Жаңалықтар тізімі (пагинация + іздеу + санат)"""
+    queryset = News.objects.filter(is_published=True)
+    categories = NewsCategory.objects.all()
+
+    # Іздеу
+    search_query = request.GET.get('q', '')
+    if search_query:
+        queryset = queryset.filter(
+            Q(title__icontains=search_query) |
+            Q(text__icontains=search_query)
+        )
+
+    # Санат бойынша сүзу
+    category_slug = request.GET.get('category', '')
+    if category_slug:
+        queryset = queryset.filter(category__slug=category_slug)
+
+    paginator = Paginator(queryset, 9)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    context = {
+        'page_obj': page_obj,
+        'categories': categories,
+        'search_query': search_query,
+        'current_category': category_slug,
+    }
+    return render(request, 'news_list.html', context)
+
+
+def news_detail(request, slug):
+    """Жаңалық толық беті"""
+    news_item = get_object_or_404(News, slug=slug, is_published=True)
+    related_news = News.objects.filter(
+        is_published=True, category=news_item.category
+    ).exclude(pk=news_item.pk)[:3]
+    context = {
+        'news': news_item,
+        'related_news': related_news,
+    }
+    return render(request, 'news_detail.html', context)
+
+
+# ── Мұғалімдер ──────────────────────────────────────────────
+
+def teacher_list(request):
+    """Мұғалімдер тізімі"""
+    teachers = Teacher.objects.all()
+    return render(request, 'teacher_list.html', {'teachers': teachers})
+
+
+def teacher_detail(request, slug):
+    """Мұғалім туралы толық ақпарат"""
+    teacher = get_object_or_404(Teacher, slug=slug)
+    return render(request, 'teacher_detail.html', {'teacher': teacher})
+
+
+# ── Галерея ─────────────────────────────────────────────────
+
+def gallery(request):
+    """Галерея — альбомдар тізімі"""
+    albums = GalleryAlbum.objects.all()
+    return render(request, 'gallery.html', {'albums': albums})
+
+
+def gallery_album(request, slug):
+    """Альбом ішіндегі суреттер"""
+    album = get_object_or_404(GalleryAlbum, slug=slug)
+    return render(request, 'gallery_album.html', {'album': album})
+
+
+# ── Құжаттар ────────────────────────────────────────────────
+
+def documents(request):
+    """Құжаттар тізімі"""
+    categories = DocumentCategory.objects.prefetch_related('documents').all()
+    return render(request, 'documents.html', {'categories': categories})
+
+
+# ── Байланыс ────────────────────────────────────────────────
+
+def contact(request):
+    """Байланыс беті + форма"""
     if request.method == 'POST':
         form = ContactForm(request.POST)
         if form.is_valid():
-            cd = form.cleaned_data
-            send_mail(
-                f"Хабарлама от {cd['name']}",
-                cd['message'],
-                cd['email'],
-                ['your_email@example.com'],  # замени на свою почту
-                fail_silently=False,
-            )
-            success = True
-            form = ContactForm()
-        return redirect("success")  # очистка формы после отправки
+            form.save()
+            messages.success(request, 'Хабарламаңыз сәтті жіберілді! Рақмет.')
+            return redirect('contact')
     else:
         form = ContactForm()
-
-    context = {
-        'form': form,
-        'success': success,
-    }
-
-    return render(request, 'contact.html', context)
-
-def contact_success(request):
-    
-    return render(request, 'success.html')
+    return render(request, 'contact.html', {'form': form})
 
 
-def news_detail(request, pk):
-    news = get_object_or_404(News, pk=pk)
-    clubs = Club.objects.filter(is_active=True)
-    return render(request, 'news_detail.html', {'news': news, 'clubs': clubs})
+# ── Статикалық бет ──────────────────────────────────────────
 
-def club_detail(request, pk):
-    club = get_object_or_404(Club, pk=pk)
+def static_page(request, slug):
+    """Кез-келген статикалық бет"""
+    page = get_object_or_404(Page, slug=slug)
+    return render(request, 'static_page.html', {'page': page})
+
+
+def club_detail(request, slug):
+    """Үйірмелер мен клубтардың толық беті"""
+    club = get_object_or_404(Club, slug=slug)
     return render(request, 'club_detail.html', {'club': club})

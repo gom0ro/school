@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Talant №1{% endblock %}
+
+{% block content %}
+
+<!-- ─── PAGE HEADER ──────────────────────────────────────── -->
+<section class="page-header">
+  <div class="container">
+    <nav aria-label="breadcrumb" data-aos="fade-down">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'app:index' %}">Басты бет</a></li>
+        <li class="breadcrumb-item active">Құжаттар</li>
+      </ol>
+    </nav>
+    <h1 class="page-header-title" data-aos="fade-up">Құжаттар</h1>
+    <p class="page-header-desc" data-aos="fade-up" data-aos-delay="100">Ресми құжаттар және нормативтік актілер</p>
+  </div>
+</section>
+
+<!-- ─── DOCUMENTS LIST ───────────────────────────────────── -->
+<section class="section-padding">
+  <div class="container">
+    {% if categories %}
+    {% for category in categories %}
+    <div class="document-category-block" data-aos="fade-up">
+      <h3 class="document-category-title">
+        <i class="bi bi-folder2-open me-2"></i>{{ category.name }}
+      </h3>
+      {% if category.documents.all %}
+      <div class="document-list">
+        {% for doc in category.documents.all %}
+        <div class="document-item">
+          <div class="document-icon">
+            <i class="bi bi-file-earmark-pdf-fill"></i>
+          </div>
+          <div class="document-info">
+            <h5>{{ doc.title }}</h5>
+            <small>{{ doc.uploaded_at|date:"d.m.Y" }}</small>
+          </div>
+          <a href="{{ doc.file.url }}" target="_blank" class="btn btn-sm btn-outline-custom" download>
+            <i class="bi bi-download me-1"></i> Жүктеу
+          </a>
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}
+      <p class="text-muted">Бұл санатта құжаттар жоқ</p>
+      {% endif %}
+    </div>
+    {% endfor %}
+    {% else %}
+    <div class="empty-state" data-aos="fade-up">
+      <i class="bi bi-file-earmark-text"></i>
+      <h4>Құжаттар жоқ</h4>
+      <p>Құжаттар жақын арада қосылады</p>
+    </div>
+    {% endif %}
+  </div>
+</section>
+
+{% endblock %}

@@ -1,20 +1,289 @@
 {% load static %}
+{% load humanize %}
 <!DOCTYPE html>
 <html lang="kk">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{% block title %}IT Школа-Лицей №24{% endblock %}</title>
+  <meta name="description" content="Talant №1 — Шымкент қаласындағы заманауи білім беру мекемесі">
+  <title>{% block title %}Talant №1{% endblock %}</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+    rel="stylesheet">
+
+  <!-- Bootstrap 5 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Bootstrap Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+  <!-- AOS Animations -->
+  <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet">
+
+  <!-- Custom CSS -->
   <link rel="stylesheet" href="{% static 'css/style.css' %}">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Favicon -->
+  <link rel="shortcut icon" href="{% static 'img/Талант копия.png' %}" type="image/x-icon">
+
+  {% block extra_head %}{% endblock %}
 </head>
+
 <body>
 
-  {% include 'includes/header.html' %}
+  <!-- ─── NAVBAR ────────────────────────────────────────── -->
+  <nav class="navbar navbar-expand-xxl fixed-top" id="mainNavbar">
+    <div class="container-fluid px-4">
+      <a class="navbar-brand d-flex align-items-center me-lg-2" href="{% url 'app:index' %}">
+        <img src="{% static 'img/Талант копия.png' %}" alt="Logo" width="32" height="32" class="me-2">
+        <span class="brand-text">Talant <strong> №1</strong></span>
+      </a>
 
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+        aria-controls="navbarNav" aria-expanded="false" aria-label="Меню">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto align-items-center">
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'app:index' %}">
+              <i class="bi bi-house-door me-1"></i>Басты бет
+            </a>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              <i class="bi bi-info-circle me-1"></i>МЕКТЕП ТУРАЛЫ
+            </a>
+            <ul class="dropdown-menu dropdown-menu-dark"
+              style="background-color: #242426; font-size: 0.9rem; border-radius: 8px; border: none; box-shadow: 0 10px 30px rgba(0,0,0,0.3);">
+              <li><a class="dropdown-item" href="{% url 'app:about' %}" style="padding: 10px 20px;">АҚПАРАТ</a></li>
+              <li><a class="dropdown-item" href="{% url 'app:static_page' 'history' %}"
+                  style="padding: 10px 20px;">МЕКТЕП ТАРИХЫ</a></li>
+              <li><a class="dropdown-item" href="{% url 'app:documents' %}" style="padding: 10px 20px;">МЕКТЕП
+                  ҚҰЖАТТАРЫ</a></li>
+              <li><a class="dropdown-item" href="{% url 'app:static_page' 'administration' %}"
+                  style="padding: 10px 20px;">МЕКТЕП ӘКІМШІЛІГІ</a></li>
+              <li><a class="dropdown-item" href="{% url 'app:static_page' 'deputies' %}" style="padding: 10px 20px;">ОҚУ
+                  ОРЫНБАСАРЛАРЫ</a></li>
+              <li><a class="dropdown-item" href="{% url 'app:static_page' 'normative' %}"
+                  style="padding: 10px 20px;">НОРМАТИВТІК ҚҰЖАТТАР</a></li>
+              <li><a class="dropdown-item" href="{% url 'app:static_page' 'accounting' %}"
+                  style="padding: 10px 20px;">БУХГАЛТЕРИЯ</a></li>
+              <li><a class="dropdown-item" href="{% url 'app:static_page' 'facilities' %}"
+                  style="padding: 10px 20px;">МАТЕРИАЛДЫҚ ТЕХНИКАЛЫҚ БАЗА</a></li>
+              <li><a class="dropdown-item" href="{% url 'app:teacher_list' %}"
+                  style="padding: 10px 20px;">МҰҒАЛІМДЕР</a></li>
+            </ul>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              <i class="bi bi-heart me-1"></i>ТӘРБИЕ ЖҰМЫСТАРЫ
+            </a>
+            <ul class="dropdown-menu dropdown-menu-dark"
+              style="background-color: #242426; font-size: 0.9rem; border-radius: 8px; border: none; box-shadow: 0 10px 30px rgba(0,0,0,0.3);">
+              <li><a class="dropdown-item" href="{% url 'app:tarbie_birtutas' %}" style="padding: 10px 20px;">БІРТҰТАС
+                  ТӘРБИЕ БАҒЫТЫ</a></li>
+              <li><a class="dropdown-item" href="{% url 'app:tarbie_zhospary' %}" style="padding: 10px 20px;">ТӘРБИЕ
+                  ЖҰМЫСЫНЫҢ ЖЫЛДЫҚ ЖОСПАРЫ</a></li>
+              <li><a class="dropdown-item" href="{% url 'app:tarbie_sharalar' %}" style="padding: 10px 20px;">ТӘРБИЕ
+                  ҚҰНДЫЛЫҚТАРЫ БОЙЫНША ІС-ШАРАЛАР</a></li>
+              <li><a class="dropdown-item" href="{% url 'app:ata_analar' %}" style="padding: 10px 20px;">АТА-АНАЛАРҒА
+                  ПЕДАГОГИКАЛЫҚ ҚОЛДАУ ОРТАЛЫҒЫ</a></li>
+              <li><a class="dropdown-item" href="{% url 'app:quqyq' %}" style="padding: 10px 20px;">ҚҰҚЫҚБҰЗУШЫЛЫҚТЫҢ
+                  АЛДЫН АЛУ ЖҰМЫСТАРЫ</a></li>
+              <li><a class="dropdown-item" href="{% url 'app:profilaktika' %}"
+                  style="padding: 10px 20px;">ПРОФИЛАКТИКАЛЫҚ КЕҢЕС</a></li>
+              <li><a class="dropdown-item" href="{% url 'app:synyp' %}" style="padding: 10px 20px;">СЫНЫП ЖЕТЕКШІЛЕР
+                  ӘДІСТЕМЕЛІК БІРЛЕСТІК ЖЕТЕКШІЛЕРДІҢ ҚҰЖАТТАРЫ</a></li>
+              <li><a class="dropdown-item" href="{% url 'app:parlament' %}" style="padding: 10px 20px;">МЕКТЕП
+                  ПАРЛАМЕНТІ</a></li>
+              <li><a class="dropdown-item" href="{% url 'app:adal_urpaq' %}" style="padding: 10px 20px;">АДАЛ ҰРПАҚ</a>
+              </li>
+              <li><a class="dropdown-item" href="{% url 'app:zhas_ulan' %}" style="padding: 10px 20px;">ЖАС ҰЛАН</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              <i class="bi bi-mortarboard me-1"></i>ҚОСЫМША БІЛІМ БЕРУ
+            </a>
+            <ul class="dropdown-menu dropdown-menu-dark"
+              style="background-color: #242426; font-size: 0.9rem; border-radius: 8px; border: none; box-shadow: 0 10px 30px rgba(0,0,0,0.3);">
+              {% if nav_clubs %}
+              {% for club in nav_clubs %}
+              <li><a class="dropdown-item" href="{% url 'app:club_detail' club.slug %}" style="padding: 10px 20px;">{{
+                  club.name|upper }}</a></li>
+              {% endfor %}
+              {% else %}
+              <li><span class="dropdown-item-text text-muted" style="padding: 10px 20px;">Үйірмелер қосылмаған</span>
+              </li>
+              {% endif %}
+            </ul>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'app:news_list' %}">
+              <i class="bi bi-newspaper me-1"></i>Жаңалықтар
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'app:gallery' %}">
+              <i class="bi bi-images me-1"></i>Галерея
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link btn-nav-contact" href="{% url 'app:contact' %}">
+              <i class="bi bi-envelope me-1"></i>Байланыс
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ─── FLASH MESSAGES ────────────────────────────────── -->
+  {% if messages %}
+  <div class="container mt-5 pt-4">
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+      <i class="bi bi-check-circle-fill me-2"></i>{{ message }}
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Жабу"></button>
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  <!-- ─── MAIN CONTENT ──────────────────────────────────── -->
   <main>
     {% block content %}{% endblock %}
   </main>
 
+  <!-- ─── FOOTER ────────────────────────────────────────── -->
+  <footer class="site-footer">
+    <div class="footer-content">
+      <div class="container">
+        <div class="row g-4">
+          <!-- Колонка 1: О школе -->
+          <div class="col-lg-4 col-md-6">
+            <div class="footer-brand d-flex align-items-center mb-3">
+              <img src="{% static 'img/Талант копия.png' %}" alt="Logo" width="45" height="45" class="me-2">
+              <div>
+                <h5 class="mb-0">Talant №1</h5>
+                <small class="text-muted-light">Шымкент қаласы</small>
+              </div>
+            </div>
+            <p class="footer-desc">
+              Заманауи білім беру технологияларын қолдана отырып,
+              болашақ буынды тәрбиелейтін мектеп.
+            </p>
+            <div class="footer-socials">
+              <a href="#" class="social-link" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
+              <a href="#" class="social-link" aria-label="TikTok"><i class="bi bi-tiktok"></i></a>
+              <a href="#" class="social-link" aria-label="WhatsApp"><i class="bi bi-whatsapp"></i></a>
+              <a href="#" class="social-link" aria-label="YouTube"><i class="bi bi-youtube"></i></a>
+            </div>
+          </div>
+
+          <!-- Колонка 2: Навигация -->
+          <div class="col-lg-2 col-md-6">
+            <h6 class="footer-heading">Навигация</h6>
+            <ul class="footer-links">
+              <li><a href="{% url 'app:index' %}">Басты бет</a></li>
+              <li><a href="{% url 'app:about' %}">Біз туралы</a></li>
+              <li><a href="{% url 'app:news_list' %}">Жаңалықтар</a></li>
+              <li><a href="{% url 'app:teacher_list' %}">Мұғалімдер</a></li>
+              <li><a href="{% url 'app:gallery' %}">Галерея</a></li>
+            </ul>
+          </div>
+
+          <!-- Колонка 3: Ресурсы -->
+          <div class="col-lg-2 col-md-6">
+            <h6 class="footer-heading">Ресурстар</h6>
+            <ul class="footer-links">
+              <li><a href="{% url 'app:documents' %}">Құжаттар</a></li>
+              <li><a href="{% url 'app:contact' %}">Байланыс</a></li>
+              <li><a href="/admin/">Админ панель</a></li>
+            </ul>
+          </div>
+
+          <!-- Колонка 4: Контакты -->
+          <div class="col-lg-4 col-md-6">
+            <h6 class="footer-heading">Байланыс</h6>
+            <ul class="footer-contact">
+              <li>
+                <i class="bi bi-geo-alt-fill"></i>
+                <span>Шымкент қаласы, С. Жандосов көшесі</span>
+              </li>
+              <li>
+                <i class="bi bi-telephone-fill"></i>
+                <span>+7 (777) 777-77-77</span>
+              </li>
+              <li>
+                <i class="bi bi-envelope-fill"></i>
+                <span>school72@edu.kz</span>
+              </li>
+              <li>
+                <i class="bi bi-clock-fill"></i>
+                <span>Дс-Жм: 8:00 — 18:30</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <hr class="footer-divider">
+        <div class="footer-bottom text-center">
+          <p>&copy; Talant №1. Барлық құқықтар қорғалған.</p>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ─── SCROLL TO TOP ─────────────────────────────────── -->
+  <button class="scroll-top-btn" id="scrollTopBtn" aria-label="Жоғарыға">
+    <i class="bi bi-arrow-up"></i>
+  </button>
+
+  <!-- ─── SCRIPTS ────────────────────────────────────────── -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+  <script>
+    // AOS initialization
+    AOS.init({
+      duration: 800,
+      easing: 'ease-out-cubic',
+      once: true,
+      offset: 60,
+    });
+
+    // Navbar scroll effect
+    const navbar = document.getElementById('mainNavbar');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 50) {
+        navbar.classList.add('navbar-scrolled');
+      } else {
+        navbar.classList.remove('navbar-scrolled');
+      }
+    });
+
+    // Scroll to top
+    const scrollTopBtn = document.getElementById('scrollTopBtn');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 400) {
+        scrollTopBtn.classList.add('visible');
+      } else {
+        scrollTopBtn.classList.remove('visible');
+      }
+    });
+    scrollTopBtn.addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  </script>
+
+  {% block extra_js %}{% endblock %}
 </body>
+
 </html>

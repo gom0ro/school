@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block title %}Құқықбұзушылықтың алдын алу жұмыстары — IT Школа-Лицей №72{% endblock %}
+{% block content %}
+<section class="page-header page-header-sm">
+  <div class="container">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'app:index' %}">Басты бет</a></li>
+        <li class="breadcrumb-item active">Құқықбұзушылықтың алдын алу жұмыстары</li>
+      </ol>
+    </nav>
+    <h1 class="page-header-title">Құқықбұзушылықтың алдын алу жұмыстары</h1>
+  </div>
+</section>
+<section class="section-padding">
+  <div class="container">
+    <div class="page-content bg-white p-5 rounded shadow-sm">
+      <p>Бұл бетте "Құқықбұзушылықтың алдын алу жұмыстары" туралы мәліметтер болады.</p>
+    </div>
+  </div>
+</section>
+{% endblock %}

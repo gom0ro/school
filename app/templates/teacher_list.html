@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Мұғалімдер — Talant №1{% endblock %}
+
+{% block content %}
+
+<!-- ─── PAGE HEADER ──────────────────────────────────────── -->
+<section class="page-header">
+  <div class="container">
+    <nav aria-label="breadcrumb" data-aos="fade-down">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'app:index' %}">Басты бет</a></li>
+        <li class="breadcrumb-item active">Мұғалімдер</li>
+      </ol>
+    </nav>
+    <h1 class="page-header-title" data-aos="fade-up">Біздің мұғалімдер</h1>
+    <p class="page-header-desc" data-aos="fade-up" data-aos-delay="100">Тәжірибелі ұстаздар ұжымы</p>
+  </div>
+</section>
+
+<!-- ─── TEACHERS GRID ────────────────────────────────────── -->
+<section class="section-padding">
+  <div class="container">
+    {% if teachers %}
+    <div class="row g-4">
+      {% for teacher in teachers %}
+      <div class="col-sm-6 col-lg-4 col-xl-3" data-aos="fade-up" data-aos-delay="{{ forloop.counter0 }}0">
+        <a href="{% url 'app:teacher_detail' teacher.slug %}" class="teacher-card-link">
+          <div class="teacher-card">
+            <div class="teacher-photo">
+              {% if teacher.photo %}
+              <img src="{{ teacher.photo.url }}" alt="{{ teacher.name }}">
+              {% else %}
+              <div class="teacher-photo-placeholder">
+                <i class="bi bi-person"></i>
+              </div>
+              {% endif %}
+            </div>
+            <div class="teacher-info">
+              <h5>{{ teacher.name }}</h5>
+              <span class="teacher-subject">{{ teacher.subject }}</span>
+              <span class="teacher-exp">
+                <i class="bi bi-briefcase me-1"></i>{{ teacher.experience }} жыл тәжірибе
+              </span>
+            </div>
+          </div>
+        </a>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state" data-aos="fade-up">
+      <i class="bi bi-people"></i>
+      <h4>Мұғалімдер тізімі бос</h4>
+      <p>Ақпарат жақын арада қосылады</p>
+    </div>
+    {% endif %}
+  </div>
+</section>
+
+{% endblock %}

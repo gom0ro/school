@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ teacher.name }} — Talant №1{% endblock %}
+
+{% block content %}
+
+<!-- ─── PAGE HEADER ──────────────────────────────────────── -->
+<section class="page-header page-header-sm">
+  <div class="container">
+    <nav aria-label="breadcrumb" data-aos="fade-down">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'app:index' %}">Басты бет</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'app:teacher_list' %}">Мұғалімдер</a></li>
+        <li class="breadcrumb-item active">{{ teacher.name }}</li>
+      </ol>
+    </nav>
+  </div>
+</section>
+
+<!-- ─── TEACHER DETAIL ───────────────────────────────────── -->
+<section class="section-padding">
+  <div class="container">
+    <div class="row g-5 justify-content-center">
+      <div class="col-md-4" data-aos="fade-right">
+        <div class="teacher-detail-photo">
+          {% if teacher.photo %}
+          <img src="{{ teacher.photo.url }}" alt="{{ teacher.name }}">
+          {% else %}
+          <div class="teacher-photo-placeholder large">
+            <i class="bi bi-person"></i>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+      <div class="col-md-8" data-aos="fade-left">
+        <h1 class="teacher-detail-name">{{ teacher.name }}</h1>
+        <div class="teacher-detail-badges">
+          <span class="badge-custom primary">
+            <i class="bi bi-book me-1"></i>{{ teacher.subject }}
+          </span>
+          <span class="badge-custom secondary">
+            <i class="bi bi-briefcase me-1"></i>{{ teacher.experience }} жыл тәжірибе
+          </span>
+        </div>
+        {% if teacher.description %}
+        <div class="teacher-detail-desc mt-4">
+          {{ teacher.description|linebreaks }}
+        </div>
+        {% endif %}
+        <a href="{% url 'app:teacher_list' %}" class="btn btn-outline-custom mt-4">
+          <i class="bi bi-arrow-left me-2"></i> Мұғалімдерге оралу
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

@@ -1,0 +1,137 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Біз туралы — Talant №1{% endblock %}
+
+{% block content %}
+
+<!-- ─── PAGE HEADER ──────────────────────────────────────── -->
+<section class="page-header">
+  <div class="container">
+    <nav aria-label="breadcrumb" data-aos="fade-down">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'app:index' %}">Басты бет</a></li>
+        <li class="breadcrumb-item active">Біз туралы</li>
+      </ol>
+    </nav>
+    <h1 class="page-header-title" data-aos="fade-up">Біз туралы</h1>
+    <p class="page-header-desc" data-aos="fade-up" data-aos-delay="100">Мектебіміз туралы толық ақпарат</p>
+  </div>
+</section>
+
+<!-- ─── ABOUT CONTENT ────────────────────────────────────── -->
+<section class="section-padding">
+  <div class="container">
+    <div class="row g-5 align-items-center">
+      <div class="col-lg-6" data-aos="fade-right">
+        <div class="about-image-grid">
+          {% if page and page.image %}
+          <img src="{{ page.image.url }}" alt="Мектеп" class="about-main-img">
+          {% else %}
+          <img src="{% static 'img/Логотип-мектеп.png' %}" alt="Мектеп" class="about-main-img">
+          {% endif %}
+        </div>
+      </div>
+      <div class="col-lg-6" data-aos="fade-left">
+        {% if page %}
+        <span class="section-label">Тарих</span>
+        <h2 class="section-title">{{ page.title }}</h2>
+        <div class="about-content-text">
+          {{ page.content|linebreaks }}
+        </div>
+        {% else %}
+        <span class="section-label">Тарих</span>
+        <h2 class="section-title">IT Школа-Лицей №72</h2>
+        <p>
+          Жеке мектептер мемлекеттік бағдарламамен сабақ береді, пәндері мен сабақ бөлімісі де ұқсас.
+          Алайда, бағдарлама мазмұны мен педагогиканың жаңа форматына байланысты қызық идеялар ұсына алады.
+        </p>
+        <p>
+          Білім беру саласында жаңа өзгерістер, ұсыныстар, жаңа модельдерді енгізуге мүмкіндік көп.
+          Пәндердің мазмұнында академиялық еркіндік болады.
+        </p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── MISSION & VALUES ─────────────────────────────────── -->
+<section class="section-padding bg-light-custom">
+  <div class="container">
+    <div class="text-center mb-5" data-aos="fade-up">
+      <span class="section-label">Миссиямыз</span>
+      <h2 class="section-title">Біздің құндылықтарымыз</h2>
+    </div>
+    <div class="row g-4">
+      <div class="col-md-4" data-aos="fade-up" data-aos-delay="0">
+        <div class="value-card">
+          <div class="value-icon">
+            <i class="bi bi-lightbulb"></i>
+          </div>
+          <h4>Инновация</h4>
+          <p>Заманауи технологияларды білім беру процесіне белсенді қолданамыз</p>
+        </div>
+      </div>
+      <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
+        <div class="value-card">
+          <div class="value-icon">
+            <i class="bi bi-star"></i>
+          </div>
+          <h4>Сапа</h4>
+          <p>Білім берудің жоғары сапасын қамтамасыз етеміз</p>
+        </div>
+      </div>
+      <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
+        <div class="value-card">
+          <div class="value-icon">
+            <i class="bi bi-heart"></i>
+          </div>
+          <h4>Тәрбие</h4>
+          <p>Рухани-адамгершілік тәрбиеге ерекше назар аударамыз</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── TEACHERS PREVIEW ─────────────────────────────────── -->
+{% if teachers_preview %}
+<section class="section-padding">
+  <div class="container">
+    <div class="text-center mb-5" data-aos="fade-up">
+      <span class="section-label">Ұжым</span>
+      <h2 class="section-title">Біздің мұғалімдер</h2>
+    </div>
+    <div class="row g-4">
+      {% for teacher in teachers_preview %}
+      <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="{{ forloop.counter0 }}00">
+        <div class="teacher-card">
+          <div class="teacher-photo">
+            {% if teacher.photo %}
+            <img src="{{ teacher.photo.url }}" alt="{{ teacher.name }}">
+            {% else %}
+            <div class="teacher-photo-placeholder">
+              <i class="bi bi-person"></i>
+            </div>
+            {% endif %}
+          </div>
+          <div class="teacher-info">
+            <h5>{{ teacher.name }}</h5>
+            <span class="teacher-subject">{{ teacher.subject }}</span>
+            <span class="teacher-exp">{{ teacher.experience }} жыл тәжірибе</span>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    <div class="text-center mt-4" data-aos="fade-up">
+      <a href="{% url 'app:teacher_list' %}" class="btn btn-outline-custom">
+        Барлық мұғалімдер <i class="bi bi-arrow-right ms-2"></i>
+      </a>
+    </div>
+  </div>
+</section>
+{% endif %}
+
+{% endblock %}

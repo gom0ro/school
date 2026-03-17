@@ -1,74 +1,235 @@
 from django.db import models
-from django.utils import timezone
-# Create your models here.
-class Slider(models.Model):
-    title = models.CharField(max_length=100)
-    image = models.ImageField(upload_to='slider/')
-    description = models.TextField()
-    created_at = models.DateTimeField(auto_now_add=True)
+from django.utils.text import slugify
+from unidecode import unidecode
 
-    def __str__(self):
-        return self.title
-    
-class Category(models.Model):
-    name = models.CharField(max_length=100)
-    image = models.ImageField(upload_to='category/')
-    created_at = models.DateTimeField(auto_now_add=True)
+
+class NewsCategory(models.Model):
+    """Категории новостей"""
+    name = models.CharField('Атауы', max_length=100)
+    slug = models.SlugField('URL', max_length=120, unique=True, blank=True)
+
+    class Meta:
+        verbose_name = 'Жаңалық санаты'
+        verbose_name_plural = 'Жаңалық санаттары'
+        ordering = ['name']
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(unidecode(self.name))
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.name
-    
-class Club(models.Model):
-    name = models.CharField(max_length=200, verbose_name="Үйірме атауы")
-    description = models.TextField(verbose_name="Сипаттама")
-    image = models.ImageField(upload_to='clubs/', verbose_name="Сурет", blank=True, null=True)
-    icon = models.CharField(max_length=100, verbose_name="Иконка классы", blank=True, help_text="FontAwesome иконка классы, мысалы: fas fa-code")
-    is_active = models.BooleanField(default=True, verbose_name="Белсенді")
-    created_at = models.DateTimeField(default=timezone.now)
-    order = models.PositiveIntegerField(default=0) 
-    class Meta:
-        verbose_name = "Үйірме"
-        verbose_name_plural = "Үйірмелер"
-    
-    def __str__(self):
-        return self.name
 
-class Staff(models.Model):
-    POSITION_CHOICES = [
-        ('teacher', 'Мұғалім'),
-        ('administrator', 'Әкімшілік'),
-        ('director', 'Директор'),
-        ('other', 'Басқа'),
-    ]
-    
-    name = models.CharField(max_length=200, verbose_name="Аты-жөні")
-    position = models.CharField(max_length=50, choices=POSITION_CHOICES, verbose_name="Лауазымы")
-    image = models.ImageField(upload_to='staff/', verbose_name="Сурет")
-    description = models.TextField(verbose_name="Сипаттама", blank=True)
-    experience = models.IntegerField(verbose_name="Тәжірибесі (жыл)", default=0)
-    is_active = models.BooleanField(default=True, verbose_name="Белсенді")
-    order = models.IntegerField(default=0, verbose_name="Реттік номер")
-    
-    class Meta:
-        verbose_name = "Қызметкер"
-        verbose_name_plural = "Қызметкерлер"
-        ordering = ['order', 'name']
-    
-    def __str__(self):
-        return f"{self.name} - {self.get_position_display()}"
 
 class News(models.Model):
-    title = models.CharField(max_length=200, verbose_name="Тақырыбы")
-    content = models.TextField(verbose_name="Мазмұны")
-    image = models.ImageField(upload_to='news/', verbose_name="Сурет", blank=True, null=True)
-    date = models.DateTimeField(default=timezone.now, verbose_name="Жарияланған күні")
-    created_at = models.DateTimeField(auto_now_add=True)
-    is_active = models.BooleanField(default=True)
+    """Жаңалықтар"""
+    title = models.CharField('Тақырыбы', max_length=255)
+    slug = models.SlugField('URL', max_length=270, unique=True, blank=True)
+    text = models.TextField('Мәтіні')
+    image = models.ImageField('Сурет', upload_to='news/', blank=True, null=True)
+    category = models.ForeignKey(
+        NewsCategory, on_delete=models.SET_NULL,
+        null=True, blank=True, verbose_name='Санаты',
+        related_name='news'
+    )
+    is_published = models.BooleanField('Жарияланған', default=True)
+    created_at = models.DateTimeField('Құрылған уақыты', auto_now_add=True)
+    updated_at = models.DateTimeField('Жаңартылған уақыты', auto_now=True)
+
     class Meta:
-        verbose_name = "Жаңалық"
-        verbose_name_plural = "Жаңалықтар"
-        ordering = ['-date']
-    
+        verbose_name = 'Жаңалық'
+        verbose_name_plural = 'Жаңалықтар'
+        ordering = ['-created_at']
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(unidecode(self.title))
+        super().save(*args, **kwargs)
+
     def __str__(self):
         return self.title
 
+
+class Teacher(models.Model):
+    """Мұғалімдер"""
+    name = models.CharField('Аты-жөні', max_length=200)
+    slug = models.SlugField('URL', max_length=220, unique=True, blank=True)
+    photo = models.ImageField('Фото', upload_to='teachers/', blank=True, null=True)
+    subject = models.CharField('Пәні', max_length=150)
+    experience = models.PositiveIntegerField('Тәжірибесі (жыл)', default=0)
+    description = models.TextField('Сипаттама', blank=True)
+    order = models.PositiveIntegerField('Реттілік', default=0)
+
+    class Meta:
+        verbose_name = 'Мұғалім'
+        verbose_name_plural = 'Мұғалімдер'
+        ordering = ['order', 'name']
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(unidecode(self.name))
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return self.name
+
+
+class GalleryAlbum(models.Model):
+    """Фотоальбом"""
+    title = models.CharField('Атауы', max_length=200)
+    slug = models.SlugField('URL', max_length=220, unique=True, blank=True)
+    cover = models.ImageField('Мұқаба', upload_to='gallery/covers/', blank=True, null=True)
+    description = models.TextField('Сипаттама', blank=True)
+    created_at = models.DateTimeField('Құрылған уақыты', auto_now_add=True)
+
+    class Meta:
+        verbose_name = 'Фотоальбом'
+        verbose_name_plural = 'Фотоальбомдар'
+        ordering = ['-created_at']
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(unidecode(self.title))
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return self.title
+
+
+class GalleryImage(models.Model):
+    """Фотоальбомдағы сурет"""
+    album = models.ForeignKey(
+        GalleryAlbum, on_delete=models.CASCADE,
+        related_name='images', verbose_name='Альбом'
+    )
+    image = models.ImageField('Сурет', upload_to='gallery/photos/')
+    caption = models.CharField('Тақырыбы', max_length=200, blank=True)
+    uploaded_at = models.DateTimeField('Жүктелген уақыты', auto_now_add=True)
+
+    class Meta:
+        verbose_name = 'Галерея суреті'
+        verbose_name_plural = 'Галерея суреттері'
+        ordering = ['-uploaded_at']
+
+    def __str__(self):
+        return self.caption or f"Сурет #{self.pk}"
+
+
+class DocumentCategory(models.Model):
+    """Құжат санаттары"""
+    name = models.CharField('Атауы', max_length=100)
+    slug = models.SlugField('URL', max_length=120, unique=True, blank=True)
+
+    class Meta:
+        verbose_name = 'Құжат санаты'
+        verbose_name_plural = 'Құжат санаттары'
+        ordering = ['name']
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(unidecode(self.name))
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return self.name
+
+
+class Document(models.Model):
+    """Құжаттар"""
+    title = models.CharField('Атауы', max_length=255)
+    file = models.FileField('Файл', upload_to='documents/')
+    category = models.ForeignKey(
+        DocumentCategory, on_delete=models.SET_NULL,
+        null=True, blank=True, verbose_name='Санаты',
+        related_name='documents'
+    )
+    uploaded_at = models.DateTimeField('Жүктелген уақыты', auto_now_add=True)
+
+    class Meta:
+        verbose_name = 'Құжат'
+        verbose_name_plural = 'Құжаттар'
+        ordering = ['-uploaded_at']
+
+    def __str__(self):
+        return self.title
+
+
+class Page(models.Model):
+    """Статикалық беттер (Мектеп туралы, т.б.)"""
+    title = models.CharField('Тақырыбы', max_length=200)
+    slug = models.SlugField('URL', max_length=220, unique=True, blank=True)
+    content = models.TextField('Мазмұны')
+    image = models.ImageField('Сурет', upload_to='pages/', blank=True, null=True)
+    updated_at = models.DateTimeField('Жаңартылған уақыты', auto_now=True)
+
+    class Meta:
+        verbose_name = 'Бет'
+        verbose_name_plural = 'Беттер'
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(unidecode(self.title))
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return self.title
+
+
+class Slider(models.Model):
+    """Басты бет слайдері"""
+    title = models.CharField('Тақырыбы', max_length=150)
+    subtitle = models.CharField('Қосымша мәтін', max_length=300, blank=True)
+    image = models.ImageField('Сурет', upload_to='slider/')
+    link = models.URLField('Сілтеме', blank=True)
+    order = models.PositiveIntegerField('Реттілік', default=0)
+    is_active = models.BooleanField('Белсенді', default=True)
+
+    class Meta:
+        verbose_name = 'Слайд'
+        verbose_name_plural = 'Слайдер'
+        ordering = ['order']
+
+    def __str__(self):
+        return self.title
+
+
+class ContactMessage(models.Model):
+    """Кері байланыс хабарламалары"""
+    name = models.CharField('Аты', max_length=100)
+    email = models.EmailField('Email')
+    phone = models.CharField('Телефон', max_length=20, blank=True)
+    subject = models.CharField('Тақырыбы', max_length=200, blank=True)
+    message = models.TextField('Хабарлама')
+    created_at = models.DateTimeField('Жіберілген уақыты', auto_now_add=True)
+    is_read = models.BooleanField('Оқылды', default=False)
+
+    class Meta:
+        verbose_name = 'Хабарлама'
+        verbose_name_plural = 'Хабарламалар'
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"{self.name} — {self.subject}"
+
+
+class Club(models.Model):
+    """Үйірмелер мен клубтар (Қосымша білім беру)"""
+    name = models.CharField('Атауы', max_length=200)
+    slug = models.SlugField('URL', max_length=220, unique=True, blank=True)
+    content = models.TextField('Мазмұны')
+    image = models.ImageField('Сурет', upload_to='clubs/', blank=True, null=True)
+    order = models.PositiveIntegerField('Реттілік', default=0)
+
+    class Meta:
+        verbose_name = 'Үйірме'
+        verbose_name_plural = 'Үйірмелер'
+        ordering = ['order', 'name']
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(unidecode(self.name))
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return self.name
